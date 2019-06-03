@@ -6,3 +6,17 @@ export const addPresidentData = presidentData => {
     }
   }
 }
+
+export const setLoading = bool => {
+  return {
+    type: 'SET_LOADING',
+    bool
+  }
+}
+
+export const setErrored = bool => {
+  return {
+    type: 'SET_ERRORED',
+    bool
+  }
+}

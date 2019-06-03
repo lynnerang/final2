@@ -23,6 +23,7 @@
 
 .President {
   width: 17%;
+  min-width: 200px;
   margin: 10px 15px;
   color: white;
   display: flex;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { addPresidentData } from '../actions';
+import { addPresidentData, setLoading, setErrored } from '../actions';
 import './App.css';
 import PresidentsContainer from '../components/PresidentsContainer/PresidentsContainer';
 
@@ -9,8 +9,6 @@ export class App extends Component {
     super(props);
 
     this.state = {
-      isLoading: true,
-      hasErrored: false,
       filter: 'All'
     }
   }
@@ -20,14 +18,12 @@ export class App extends Component {
       .then(res => res.json())
       .then(data => {
         this.props.addPresidentData(data)
-        this.setState({isLoading: false, hasErrored: false})
+        this.props.setLoading(false)
+        this.props.setErrored(false)
       })
       .catch(err => {
-        this.setState({
-          isLoading: false,
-          hasErrored: true
-        })
-        console.log(err)
+        this.props.setLoading(false)
+        this.props.setErrored(true)
       })
   }
 
@@ -46,15 +42,16 @@ export class App extends Component {
   }
 
   render() {
+    console.log(this.state)
     const options = this.getFilterOptions();
     let page;
     const data = this.state.filter === 'All' ? this.props.presidentData
       : this.props.presidentData.filter(i => i.party === this.state.filter);
 
-    if (this.state.isLoading) {
+    if (this.props.isLoading) {
       page = "Loading..."
-    } else if (this.state.hasErrored) {
-      page = "Error loading page."
+    } else if (this.props.hasErrored) {
+      page = `${this.state.error}`
     } else {
       page = (
         <div className="App">
@@ -75,11 +72,15 @@ export class App extends Component {
 }
 
 export const mapStateToProps = state => ({
-  presidentData: state.presidentData
+  presidentData: state.presidentData,
+  isLoading: state.isLoading,
+  hasErrored: state.hasErrored
 })
 
 export const mapDispatchToProps = dispatch => ({
-  addPresidentData: data => dispatch(addPresidentData(data))
+  addPresidentData: data => dispatch(addPresidentData(data)),
+  setLoading: bool => dispatch(setLoading(bool)),
+  hasErrored: bool => dispatch(setErrored(bool))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
