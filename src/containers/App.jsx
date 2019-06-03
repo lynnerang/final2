@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { addPresidentData } from './actions';
+import { addPresidentData } from '../actions';
 import './App.css';
+import PresidentsContainer from '../components/PresidentsContainer/PresidentsContainer';
 
 export class App extends Component {
   constructor(props) {
@@ -21,7 +22,13 @@ export class App extends Component {
         this.props.addPresidentData(data)
         this.setState({isLoading: false, hasErrored: false})
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        this.setState({
+          isLoading: false,
+          hasErrored: true
+        })
+        console.log(err)
+      })
   }
 
   getFilterOptions = () => {
@@ -41,6 +48,8 @@ export class App extends Component {
   render() {
     const options = this.getFilterOptions();
     let page;
+    const data = this.state.filter === 'All' ? this.props.presidentData
+      : this.props.presidentData.filter(i => i.party === this.state.filter);
 
     if (this.state.isLoading) {
       page = "Loading..."
@@ -56,7 +65,7 @@ export class App extends Component {
               {options}
             </select>
           </header>
-          <PresidentsContainer />
+          <PresidentsContainer data={data}/>
         </div>
       );
     }
