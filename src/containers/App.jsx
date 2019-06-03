@@ -42,6 +42,7 @@ export class App extends Component {
   }
 
   render() {
+    console.log(this.state)
     const options = this.getFilterOptions();
     let page;
     const data = this.state.filter === 'All' ? this.props.presidentData
